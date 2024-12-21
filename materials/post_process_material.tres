@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bysnmvm1ufx71"]
+
+[ext_resource type="Shader" path="res://shaders/post_process/color_post_process_filter.gdshader" id="1_cdspw"]
+
+[resource]
+shader = ExtResource("1_cdspw")
+shader_parameter/portal_a_transparent_color = Color(1, 0, 1, 0)
+shader_parameter/portal_b_transparent_color = Color(0, 0, 0, 0)
+shader_parameter/filter_color = Color(0, 0, 0, 0)
