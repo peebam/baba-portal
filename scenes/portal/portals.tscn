@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxikjemllanac"]
+
+[ext_resource type="Script" uid="uid://bv3tv0k57m78j" path="res://scenes/portal/portals.gd" id="1_lalpx"]
+[ext_resource type="PackedScene" uid="uid://bc6c7obj5fgfk" path="res://scenes/portal/portal.tscn" id="1_o5cif"]
+
+[node name="Portals" type="Node3D"]
+script = ExtResource("1_lalpx")
+
+[node name="PortalA" parent="." node_paths=PackedStringArray("linked_portal") instance=ExtResource("1_o5cif")]
+unique_name_in_owner = true
+visible = false
+main_color = Color(0.891843, 0.00501681, 0.328446, 1)
+default_cull_mask = 131075
+level_cull_mask = 8
+frame_layers = 16
+technical_layers = 4
+linked_portal = NodePath("../PortalB")
+view_recursion = 3
+
+[node name="PortalB" parent="." node_paths=PackedStringArray("linked_portal") instance=ExtResource("1_o5cif")]
+unique_name_in_owner = true
+visible = false
+main_color = Color(0.450846, 0.329525, 0.911415, 1)
+id = 1
+default_cull_mask = 131075
+level_cull_mask = 64
+frame_layers = 128
+technical_layers = 32
+linked_portal = NodePath("../PortalA")
+view_recursion = 2
+transparent_color = Color(1, 0, 1, 1)
+
+[connection signal="object_crossed" from="." to="." method="_on_object_crossed"]
+[connection signal="object_entered" from="." to="." method="_on_object_entered"]
+[connection signal="object_exited" from="." to="." method="_on_object_exited"]

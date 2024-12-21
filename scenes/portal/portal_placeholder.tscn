@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://dsgpxle7cecpt"]
+
+[ext_resource type="Script" uid="uid://bnb311tanxe2o" path="res://scenes/portal/portal_placeholder.gd" id="1_6xjfs"]
+[ext_resource type="PackedScene" uid="uid://cfvetmkxf2h8n" path="res://scenes/portal/portal_frame.tscn" id="2_mqkkx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wol65"]
+size = Vector3(0.1, 1.9, 0.9)
+
+[node name="PortalPlaceholder" type="Node3D"]
+script = ExtResource("1_6xjfs")
+
+[node name="Frame" parent="." instance=ExtResource("2_mqkkx")]
+layers = 262144
+
+[node name="RayCastTopLeft" type="RayCast3D" parent="."]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -0.4, 0.9, -0.05)
+target_position = Vector3(-0.3, 0, 0)
+collision_mask = 2
+hit_from_inside = true
+
+[node name="RayCastBottomRight" type="RayCast3D" parent="."]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, 0.4, -0.9, -0.05)
+target_position = Vector3(-0.3, 0, 0)
+collision_mask = 2
+hit_from_inside = true
+
+[node name="ShapeCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, 0, -0.1)
+shape = SubResource("BoxShape3D_wol65")
+target_position = Vector3(0, 0, 0)
+collision_mask = 2
+
+[connection signal="status_changed" from="." to="." method="_on_status_changed"]

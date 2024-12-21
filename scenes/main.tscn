@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://bjxcx2d0hb6ds"]
+
+[ext_resource type="Script" uid="uid://uoma8268ewlr" path="res://scenes/main.gd" id="1_1dqqh"]
+[ext_resource type="PackedScene" uid="uid://b02pdc888ynws" path="res://scenes/game.tscn" id="1_4uoca"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_t310l"]
+
+[sub_resource type="Sky" id="Sky_7tpos"]
+sky_material = SubResource("ProceduralSkyMaterial_t310l")
+
+[sub_resource type="Environment" id="Environment_1xvkb"]
+background_mode = 2
+background_energy_multiplier = 2.0
+sky = SubResource("Sky_7tpos")
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 1.2
+glow_enabled = true
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_1dqqh")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1xvkb")
+
+[node name="Game" parent="." instance=ExtResource("1_4uoca")]

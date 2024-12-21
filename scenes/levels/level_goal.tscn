@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://d2w0nwq8ealaa"]
+
+[ext_resource type="Script" uid="uid://bt07mvposhle3" path="res://scenes/levels/level_goal.gd" id="1_y1lg7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ijcmd"]
+size = Vector3(1, 0.05, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dqhql"]
+size = Vector3(1, 0.05, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_438ek"]
+size = Vector3(0.8, 0.2, 0.8)
+
+[node name="LevelGoal" type="StaticBody3D"]
+script = ExtResource("1_y1lg7")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+shape = SubResource("BoxShape3D_ijcmd")
+disabled = true
+
+[node name="MeshInstance" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+layers = 0
+mesh = SubResource("BoxMesh_dqhql")
+
+[node name="Area" type="Area3D" parent="."]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Area"]
+transform = Transform3D(0.999998, 0, 0.00174533, 0, 1, 0, -0.00174533, 0, 0.999998, 0, 0.15, 0)
+shape = SubResource("BoxShape3D_438ek")
+disabled = true
+
+[node name="ActivationTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 2.0
+
+[connection signal="left" from="." to="." method="_on_left"]
+[connection signal="reached" from="." to="." method="_on_reached"]
+[connection signal="body_entered" from="Area" to="." method="_on_area_body_entered"]
+[connection signal="body_exited" from="Area" to="." method="_on_area_body_exited"]
+[connection signal="timeout" from="ActivationTimer" to="." method="_on_activation_timer_timeout"]

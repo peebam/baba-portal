@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://b02pdc888ynws"]
+
+[ext_resource type="Script" uid="uid://dutdqwxkwmgyi" path="res://scenes/game.gd" id="1_k87lh"]
+[ext_resource type="PackedScene" uid="uid://namepa245nf8" path="res://scenes/player.tscn" id="3_6g8ua"]
+[ext_resource type="Script" uid="uid://cx8x1ft26ujnb" path="res://lib/viewport_auto_reisze.gd" id="4_s87ao"]
+[ext_resource type="PackedScene" uid="uid://bxikjemllanac" path="res://scenes/portal/portals.tscn" id="5_u5sy4"]
+[ext_resource type="PackedScene" uid="uid://dsgpxle7cecpt" path="res://scenes/portal/portal_placeholder.tscn" id="6_5ok7j"]
+[ext_resource type="PackedScene" uid="uid://w3btsd3cquti" path="res://scenes/post_process.tscn" id="6_ojgi5"]
+[ext_resource type="Shader" uid="uid://b25jxntoc8ql5" path="res://shaders/render_compositing.gdshader" id="7_wixri"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xlr11"]
+shader = ExtResource("7_wixri")
+shader_parameter/portal_a_textures = null
+shader_parameter/portal_a_nb_textures = 4
+shader_parameter/portal_a_transparent_color = Color(0, 0, 0, 1)
+shader_parameter/portal_b_textures = null
+shader_parameter/portal_b_nb_textures = 4
+shader_parameter/portal_b_transparent_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_gk75j"]
+
+[node name="Game" type="Node3D"]
+script = ExtResource("1_k87lh")
+
+[node name="MainViewport" type="SubViewport" parent="."]
+unique_name_in_owner = true
+transparent_bg = true
+
+[node name="Player" parent="MainViewport" groups=["crosser"] instance=ExtResource("3_6g8ua")]
+unique_name_in_owner = true
+transform = Transform3D(0.207912, -1.81762e-08, -0.978148, -8.74228e-08, -1, 0, -0.978148, 8.55124e-08, -0.207912, -1.55916, 2.28598, 4.9463)
+default_camera_cull_mask = 393911
+display_instance_layers = 1
+
+[node name="PostProcess" parent="MainViewport" instance=ExtResource("6_ojgi5")]
+unique_name_in_owner = true
+
+[node name="ViewportAutoReisze" type="Node" parent="MainViewport"]
+script = ExtResource("4_s87ao")
+
+[node name="PlayerMirror" parent="." instance=ExtResource("3_6g8ua")]
+unique_name_in_owner = true
+transform = Transform3D(-0.948878, 0, 0.315649, 0, 1, 0, -0.315649, 0, -0.948878, -0.31976, 2, -0.02573)
+visible = false
+display_instance_layers = 2
+
+[node name="Portals" parent="." instance=ExtResource("5_u5sy4")]
+
+[node name="PortalPlaceholder" parent="." instance=ExtResource("6_5ok7j")]
+unique_name_in_owner = true
+transform = Transform3D(1, -2.72971e-21, 0, -2.13416e-21, 1, -4.23516e-22, 0, 0, 1, 0, 0, -5.96046e-08)
+
+[node name="Render" type="CanvasLayer" parent="."]
+
+[node name="RenderTexture" type="TextureRect" parent="Render"]
+material = SubResource("ShaderMaterial_xlr11")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_gk75j")
+
+[node name="CenterContainer" type="CenterContainer" parent="Render"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Reticle" type="Label" parent="Render/CenterContainer"]
+layout_mode = 2
+text = "O"
+
+[connection signal="level_set" from="." to="." method="_on_level_set"]
+[connection signal="room_entered" from="." to="." method="_on_room_entered"]
+[connection signal="object_crossed" from="Portals" to="." method="_on_portals_object_crossed"]
+[connection signal="object_entered" from="Portals" to="." method="_on_portals_object_entered"]
+[connection signal="object_exited" from="Portals" to="." method="_on_portals_object_exited"]

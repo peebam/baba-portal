@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3 uid="uid://bc6c7obj5fgfk"]
+
+[ext_resource type="Script" uid="uid://2u1yt7ptri4f" path="res://scenes/portal/portal.gd" id="1_0bcba"]
+[ext_resource type="Material" uid="uid://cqdryidc4rj3d" path="res://materials/portal_broken_material.tres" id="4_cuslf"]
+[ext_resource type="PackedScene" uid="uid://cfvetmkxf2h8n" path="res://scenes/portal/portal_frame.tscn" id="5_qdmhg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vqg1g"]
+margin = 0.01
+size = Vector3(1, 2, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mngd5"]
+margin = 0.01
+size = Vector3(1, 2, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lt4xa"]
+size = Vector3(0.9, 1.9, 0.1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ygh5e"]
+resource_local_to_scene = true
+size = Vector2(0.9, 1.9)
+subdivide_width = 4
+subdivide_depth = 4
+
+[sub_resource type="BoxMesh" id="BoxMesh_umpx7"]
+size = Vector3(0.9, 0.02, 1.9)
+
+[node name="Portal" type="StaticBody3D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_0bcba")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
+shape = SubResource("BoxShape3D_vqg1g")
+disabled = true
+
+[node name="ObjectsDetector" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.15)
+shape = SubResource("BoxShape3D_mngd5")
+target_position = Vector3(0, 0, 0)
+collision_mask = 9
+debug_shape_custom_color = Color(0.694118, 0, 0, 1)
+
+[node name="WallsDetector" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
+shape = SubResource("BoxShape3D_lt4xa")
+target_position = Vector3(0, 0, 0.1)
+collision_mask = 2
+
+[node name="Display" type="Node3D" parent="."]
+
+[node name="Technical" type="MeshInstance3D" parent="Display"]
+process_priority = -1
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+layers = 0
+cast_shadow = 0
+gi_mode = 2
+mesh = SubResource("PlaneMesh_ygh5e")
+skeleton = NodePath("../../..")
+
+[node name="Close" type="MeshInstance3D" parent="Display"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.01)
+visible = false
+layers = 0
+material_override = ExtResource("4_cuslf")
+cast_shadow = 0
+gi_mode = 2
+mesh = SubResource("BoxMesh_umpx7")
+
+[node name="Frame" parent="Display" instance=ExtResource("5_qdmhg")]
