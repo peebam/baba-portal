@@ -28,7 +28,6 @@ transparent_bg = true
 [node name="Player" parent="MainViewport" instance=ExtResource("3_6g8ua")]
 unique_name_in_owner = true
 transform = Transform3D(0.207912, -1.81762e-08, -0.978148, -8.74228e-08, -1, 0, -0.978148, 8.55124e-08, -0.207912, -1.55916, 2.28598, 4.9463)
-up_direction = Vector3(0, -1, 0)
 active = true
 camera_cull_mask = 789175
 display_instance_layers = 1

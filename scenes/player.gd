@@ -15,6 +15,9 @@ const GRAVITY := 10.0
 @export_flags_3d_render var display_instance_layers := 0
 
 @onready var _gun_target: RayCast3D = $Head/RayCast
+@onready var _head: Camera3D = $Head
+
+var cross_position: Vector3 : get = get_cross_position
 
 var _go_slow := false
 
@@ -84,6 +87,10 @@ func _physics_process(delta: float) -> void:
 		target_unset.emit()
 
 # Public
+
+func get_cross_position() -> Vector3:
+	return _head.global_position
+
 
 func set_active(value: bool) -> void:
 	active = value

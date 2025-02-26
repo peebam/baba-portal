@@ -154,7 +154,7 @@ func _cross(colliders: Array[Node3D]) -> void:
 			object_entered.emit(collider, self)
 			_objects.append(collider)
 
-		if is_behind(collider.position):
+		if is_behind(collider.cross_position):
 			var new_position := get_linked_position(collider.position)
 			var new_rotation := get_linked_rotation(collider.quaternion)
 			object_crossed.emit(
@@ -196,7 +196,9 @@ func _detect_crossers() -> Array[Node3D]:
 	var colliders: Array[Node3D] = []
 	var nb_objects := _objects_detector.get_collision_count()
 	for i in nb_objects:
-		colliders.append(_objects_detector.get_collider(i))
+		var collider: Node3D = _objects_detector.get_collider(i)
+		if collider.is_in_group("crosser"):
+			colliders.append(_objects_detector.get_collider(i))
 
 	return colliders
 
