@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dpc4xtftfggit"]
+
+[ext_resource type="Script" path="res://scenes/levels/level.gd" id="1_e4scs"]
+
+[node name="Level" type="Node3D"]
+script = ExtResource("1_e4scs")
+
+[node name="GoalTimer" type="Timer" parent="."]
+wait_time = 5.0

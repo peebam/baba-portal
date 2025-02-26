@@ -83,6 +83,8 @@ func set_level(value: Level) -> void:
 # Private
 
 func _enter_level() -> void:
+	_player.position = level.start_postion
+	_player.quaternion = level.start_quaternion
 	_room = level.get_first_room()
 
 

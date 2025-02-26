@@ -11,7 +11,9 @@ func _ready() -> void:
 
 func load_level(number: int) -> void:
 	var scene_name := level_scene_names[number]
-
 	var scene: PackedScene = load(scene_name)
 	var level: Level = scene.instantiate()
+	level.goal_activated.connect(func ():
+		print("Goal Activated")
+	)
 	$Game.level = level

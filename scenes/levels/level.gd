@@ -1,9 +1,14 @@
 class_name Level extends Node3D
 
+signal goal_activated
+
 enum PORTAL_IDS {
 	A = 0,
 	B = 1
 }
+
+@onready var start_postion := Vector3.ZERO
+@onready var start_quaternion := Quaternion.IDENTITY
 
 var _rooms: Array[Level.Room]
 

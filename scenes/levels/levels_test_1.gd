@@ -35,3 +35,8 @@ func get_walls() -> Array[Wall]:
 	walls.append_array(roof_nodes)
 
 	return walls
+
+# Signals
+
+func _on_level_goal_activated() -> void:
+	goal_activated.emit()
