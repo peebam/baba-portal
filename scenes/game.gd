@@ -54,7 +54,6 @@ func _ready() -> void:
 	_main_post_process.transparent_colors = transparents_color
 
 
-
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("quit"):
 		get_tree().quit()
@@ -95,14 +94,16 @@ func _enter_next_room(portal_id: Level.PORTAL_IDS) -> void:
 func _put_portal(portal: Portal, position_: Vector3, quaternion_: Quaternion) -> void:
 	portal.position = position_
 	portal.quaternion = quaternion_
-	_update_portal(portal)
+	_update_portal_layers(portal)
+	_update_portal_viewer(portal)
+	_update_portal_viewer(portal.linked_portal)
 
 	await portal.display()
 
 
 func _reset_portals() -> void:
-	_portal_a.dispose()
-	_portal_b.dispose()
+	await _portal_a.dispose()
+	await _portal_b.dispose()
 
 
 func _set_portal_filter(portal: Portal, filter: PostProcess.Filter):
@@ -127,8 +128,7 @@ func _try_put_portal(portal: Portal) -> void:
 	)
 
 
-func _update_portal(portal: Portal) -> void:
-	_update_portal_layers(portal)
+func _update_portal_viewer(portal: Portal) -> void:
 	portal.update(_current_cmera_position, _current_cmera_quaternion)
 
 

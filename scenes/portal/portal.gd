@@ -29,8 +29,13 @@ const EXTRA_CULL_MARGIN_MIN := 0.0
 @export_range(1, 10) var view_recursion := 4
 @export_color_no_alpha var transparent_color : Color = Color.AQUA
 
+@onready var _collision_shape: CollisionShape3D = $CollisionShape
+@onready var _display_close: MeshInstance3D = $Display/Close
+@onready var _display_frame: PortalFrame = $Display/Frame
+@onready var _display_technical: MeshInstance3D = $Display/Technical
 @onready var _objects_detector: ShapeCast3D = $ObjectsDetector
 @onready var _walls_detector: ShapeCast3D = $WallsDetector
+
 
 var _cameras: Array[PortalCamera] = []
 var _extra_cull_mask := EXTRA_CULL_MARGIN_MIN : set = _set_extra_cull_mask
@@ -43,12 +48,12 @@ func _ready() -> void:
 	var technical_material: Material = load("res://materials/portal_technical_material.tres").duplicate(true)
 	technical_material.albedo_color = transparent_color
 
-	$Display/Frame.main_color = main_color
-	$Display/Technical.material_override = technical_material
+	_display_frame.main_color = main_color
+	_display_technical.material_override = technical_material
 
-	$Display/Close.layers = technical_layers
-	$Display/Frame.layers = technical_layers | frame_layers
-	$Display/Technical.layers = technical_layers
+	_display_close.layers = technical_layers
+	_display_frame.layers = technical_layers | frame_layers
+	_display_technical.layers = technical_layers
 
 	get_tree().get_root().size_changed.connect(_on_viewport_size_changed)
 	_update_viewport_size()
@@ -61,13 +66,16 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not visible:
+		return
+
 	_check_crosser()
 
 # Public
 
 func display() -> void:
 	visible = true
-	$Display/Close.visible = true
+	_display_close.visible = true
 
 	await _unset_from_walls_behind()
 	_update_walls_behind()
@@ -77,7 +85,7 @@ func display() -> void:
 
 
 func dispose() -> void:
-	$Display/Close.visible = true
+	_display_close.visible = true
 
 	await _unset_from_walls_behind()
 
@@ -145,10 +153,6 @@ func update(camera_position: Vector3, camera_rotation: Quaternion) -> void:
 
 func _check_crosser() -> void:
 	var colliders := _detect_crossers()
-	_cross(colliders)
-
-
-func _cross(colliders: Array[Node3D]) -> void:
 	for collider in colliders:
 		if !_objects.has(collider):
 			object_entered.emit(collider, self)
@@ -173,8 +177,8 @@ func _cross(colliders: Array[Node3D]) -> void:
 
 func _close() -> void:
 	if visible:
-		$Display/Close.visible = true
-		$CollisionShape.set_deferred("disabled", false)
+		_display_close.visible = true
+		_collision_shape.set_deferred("disabled", false)
 
 
 func _create_camera() -> PortalCamera:
@@ -239,8 +243,8 @@ func _get_walls_behind() -> Array[Wall]:
 
 func _open() -> bool:
 	if visible:
-		$Display/Close.visible = false
-		$CollisionShape.set_deferred("disabled", true)
+		_display_close.visible = false
+		_collision_shape.set_deferred("disabled", true)
 		return true
 	return false
 
@@ -250,8 +254,8 @@ func _set_extra_cull_mask(value: float) -> void:
 		return
 
 	_extra_cull_mask = value
-	$Display/Technical.extra_cull_margin = _extra_cull_mask
-	$Display/Close.extra_cull_margin = _extra_cull_mask
+	_display_technical.extra_cull_margin = _extra_cull_mask
+	_display_close.extra_cull_margin = _extra_cull_mask
 
 
 func _set_to_walls_behind() -> void:
@@ -283,10 +287,16 @@ func _update_walls_behind() -> void:
 # Signals
 
 func _on_object_entered(object: Node3D, portal: Portal) -> void:
+	if not visible:
+		return
+
 	linked_portal._extra_cull_mask = EXTRA_CULL_MARGIN_MAX
 
 
 func _on_object_exited(object: Node3D, portal: Portal, to_linked_portal: bool) -> void:
+	if not visible:
+		return
+
 	if not to_linked_portal:
 		linked_portal._extra_cull_mask = EXTRA_CULL_MARGIN_MIN
 		_extra_cull_mask = EXTRA_CULL_MARGIN_MIN

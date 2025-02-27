@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/portal/portal.gd" id="1_0bcba"]
 [ext_resource type="Material" uid="uid://cqdryidc4rj3d" path="res://materials/portal_broken_material.tres" id="4_cuslf"]
-[ext_resource type="PackedScene" path="res://scenes/portal/portal_frame.tscn" id="5_qdmhg"]
+[ext_resource type="PackedScene" uid="uid://cfvetmkxf2h8n" path="res://scenes/portal/portal_frame.tscn" id="5_qdmhg"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vqg1g"]
 size = Vector3(1, 2, 0.1)
@@ -36,6 +36,7 @@ script = ExtResource("1_0bcba")
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
 shape = SubResource("BoxShape3D_vqg1g")
+disabled = true
 
 [node name="ObjectsDetector" type="ShapeCast3D" parent="."]
 shape = SubResource("BoxShape3D_mngd5")
