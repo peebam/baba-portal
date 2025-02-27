@@ -31,6 +31,7 @@ script = ExtResource("1_82jti")
 [node name="CollisionShapeBody" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.815935, 0)
 shape = SubResource("CapsuleShape3D_k5h7r")
+disabled = true
 
 [node name="Body" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)

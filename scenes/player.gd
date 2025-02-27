@@ -22,18 +22,16 @@ var cross_position: Vector3 : get = get_cross_position
 var _go_slow := false
 
 func _ready() -> void:
-	self.active = active
-	$Body.layers = display_instance_layers
-	$Head/Direction.layers = display_instance_layers
-	$Head.current = active
-	$Head.cull_mask = camera_cull_mask
-	$CollisionShapeBody.disabled = not active
-
 	var material := StandardMaterial3D. new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.albedo_color = body_color
+
+	$Body.layers = display_instance_layers
 	$Body.material_override = material
+	$Head.cull_mask = camera_cull_mask
+	$Head/Direction.layers = display_instance_layers
 	$Head/Direction.material_override = material
+
 
 
 func _input(event: InputEvent) -> void:
@@ -93,8 +91,12 @@ func get_cross_position() -> Vector3:
 
 
 func set_active(value: bool) -> void:
+	if active == value:
+		return
+
 	active = value
-	$Head.current = value
+	$Head.current = active
+	$CollisionShapeBody.set_deferred("disabled", not active)
 
 
 func set_gravity_direction(value: Vector3) -> void:
