@@ -50,6 +50,8 @@ func _compute_collision_shape() -> Shape3D:
 	csg_root.mesh = 	base_mesh
 	add_child(csg_root)
 
+	# Use CSG tool to compute de the hole left by the opened portal in the mesh of the wall.
+	# This mesh is used to build the collision sahpe of the wall.
 	for portal in _portals:
 		var csg_child := CSGBox3D.new()
 		csg_root.add_child(csg_child)
@@ -59,6 +61,8 @@ func _compute_collision_shape() -> Shape3D:
 		csg_child.size = Vector3(1, 2, 0.4)
 	csg_root.position = Vector3(1000, 1000, 1000)
 
+	# Wait for the CSG to compute the mesh
+	await get_tree().process_frame
 	await get_tree().process_frame
 
 	var computed_mesh = csg_root.get_meshes()[1]
@@ -77,6 +81,7 @@ func _compute_meshes() -> Mesh:
 	csg_root.mesh = base_mesh
 	add_child(csg_root)
 
+	# Use CSG tool to compute de the hole left by the opened portal in the mesh of the wall
 	for portal in _portals:
 		var csg_child := CSGBox3D.new()
 		csg_root.add_child(csg_child)
@@ -86,8 +91,12 @@ func _compute_meshes() -> Mesh:
 		csg_child.size = Vector3(1, 1.9, 0.2)
 	csg_root.position = Vector3(1000, 1000, 1000)
 
+	# Wait for the CSG to compute the mesh
 	await get_tree().process_frame
-	var computed_mesh = csg_root.get_meshes()[1]
+	await get_tree().process_frame
+
+	var meshes = csg_root.get_meshes()
+	var computed_mesh = meshes[1]
 
 	remove_child(csg_root)
 	return computed_mesh
