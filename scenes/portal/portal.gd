@@ -16,10 +16,12 @@ const EXTRA_CULL_MARGIN_MIN := 0.0
 @export_category("General")
 @export_color_no_alpha var main_color := Color.AQUA
 
+@export_category("Cull masks")
+@export_flags_3d_render var default_cull_mask := 0
+@export_flags_3d_render var level_cull_mask := 0
+
 @export_category("Layers")
-@export_flags_3d_render var default_layers := 0
 @export_flags_3d_render var frame_layers := 0
-@export_flags_3d_render var level_layers := 0
 @export_flags_3d_render var technical_layers := 0
 
 @export_category("Link")
@@ -184,7 +186,7 @@ func _close() -> void:
 func _create_camera() -> PortalCamera:
 	var camera := PortalCamera.new_scene()
 	add_child(camera)
-	camera.set_cull_mask(default_layers | technical_layers | level_layers)
+	camera.set_cull_mask(default_cull_mask | level_cull_mask | technical_layers)
 	return camera
 
 

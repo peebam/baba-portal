@@ -148,9 +148,9 @@ func _update_portal_layers(portal: Portal) -> void:
 	for wall in walls:
 		var layers = wall.layers
 		if not portal.is_behind(wall.position):
-			layers |= portal.linked_portal.level_layers
+			layers |= portal.linked_portal.level_cull_mask
 		else:
-			layers &= ~portal.linked_portal.level_layers
+			layers &= ~portal.linked_portal.level_cull_mask
 		wall.layers = layers
 
 
