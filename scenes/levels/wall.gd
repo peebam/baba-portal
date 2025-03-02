@@ -1,8 +1,13 @@
 class_name Wall extends StaticBody3D
 
-@export_flags_3d_render var layers = 0 : set = set_layers
+@export_flags_3d_render var default_layers = 0
+
+var layers: int : set = set_layers
 
 var _portals: Array[Portal] = []
+
+func _ready() -> void:
+	self.layers = default_layers
 
 # Public
 

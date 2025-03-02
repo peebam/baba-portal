@@ -9,7 +9,7 @@ const BREAK = 1.0
 const JUMP_VELOCITY = 4.5
 const GRAVITY := 10.0
 
-@export var active := false : set = set_active
+@export var active := false
 @export var body_color := Color.CORNFLOWER_BLUE
 @export_flags_3d_render var camera_cull_mask := 0
 @export_flags_3d_render var display_instance_layers := 0
@@ -31,7 +31,9 @@ func _ready() -> void:
 
 	_body.layers = display_instance_layers
 	_body.material_override = material
+	_collision_shape.set_deferred("disabled", not active)
 	_head.cull_mask = camera_cull_mask
+	_head.current = active
 	_head_direction.layers = display_instance_layers
 	_head_direction.material_override = material
 

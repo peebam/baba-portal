@@ -169,6 +169,7 @@ func _on_level_set() -> void:
 	_reset_portals()
 	_enter_level()
 
+
 func _on_player_moved(camera_transform: Transform3D) -> void:
 	_current_cmera_position = camera_transform.origin
 	_current_cmera_quaternion = camera_transform.basis.get_rotation_quaternion()
