@@ -31,18 +31,17 @@ const EXTRA_CULL_MARGIN_MIN := 0.0
 @export_range(1, 10) var view_recursion := 4
 @export_color_no_alpha var transparent_color : Color = Color.AQUA
 
+var _cameras: Array[PortalCamera] = []
+var _extra_cull_mask := EXTRA_CULL_MARGIN_MIN : set = _set_extra_cull_mask
+var _objects: Array[Node3D] = []
+var _walls_behind: Array[Wall] = []
+
 @onready var _collision_shape: CollisionShape3D = $CollisionShape
 @onready var _display_close: MeshInstance3D = $Display/Close
 @onready var _display_frame: PortalFrame = $Display/Frame
 @onready var _display_technical: MeshInstance3D = $Display/Technical
 @onready var _objects_detector: ShapeCast3D = $ObjectsDetector
 @onready var _walls_detector: ShapeCast3D = $WallsDetector
-
-
-var _cameras: Array[PortalCamera] = []
-var _extra_cull_mask := EXTRA_CULL_MARGIN_MIN : set = _set_extra_cull_mask
-var _objects: Array[Node3D] = []
-var _walls_behind: Array[Wall] = []
 
 func _ready() -> void:
 	_create_cameras()

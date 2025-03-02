@@ -4,6 +4,13 @@ signal portal_crossed(from_portal_id: Level.PORTAL_IDS)
 signal room_entered()
 signal level_set()
 
+var level: Level : set = set_level
+
+var _current_cmera_position: Vector3
+var _current_cmera_quaternion: Quaternion
+var _portal_activated: Portal = null
+var _room : Level.Room : set = _set_room
+
 @onready var _main_post_process: PostProcess = %PostProcess
 @onready var _main_viewport: SubViewport = %MainViewport
 @onready var _player: Player = %Player
@@ -12,13 +19,6 @@ signal level_set()
 @onready var _portal_b: Portal = %PortalB
 @onready var _portal_placeholder: PortalPlaceholder = %PortalPlaceholder
 @onready var _render_texture: TextureRect = $Render/RenderTexture
-
-var level: Level : set = set_level
-
-var _current_cmera_position: Vector3
-var _current_cmera_quaternion: Quaternion
-var _portal_activated: Portal = null
-var _room : Level.Room : set = _set_room
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED

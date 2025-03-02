@@ -1,6 +1,7 @@
 class_name PortalFrame extends Node3D
 
 @export_flags_3d_render var layers := 0 : set = set_layers
+
 var main_color := Color.BLACK : set = set_main_color
 
 var _material : StandardMaterial3D = load("res://materials/portal_frame_material.tres").duplicate(true)

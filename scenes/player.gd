@@ -14,24 +14,26 @@ const GRAVITY := 10.0
 @export_flags_3d_render var camera_cull_mask := 0
 @export_flags_3d_render var display_instance_layers := 0
 
-@onready var _gun_target: RayCast3D = $Head/RayCast
-@onready var _head: Camera3D = $Head
-
 var cross_position: Vector3 : get = get_cross_position
 
 var _go_slow := false
+
+@onready var _body: MeshInstance3D = $Body
+@onready var _collision_shape: CollisionShape3D = $CollisionShape
+@onready var _gun_target: RayCast3D = $Head/RayCast
+@onready var _head: Camera3D = $Head
+@onready var _head_direction: MeshInstance3D = $Head/Direction
 
 func _ready() -> void:
 	var material := StandardMaterial3D. new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.albedo_color = body_color
 
-	$Body.layers = display_instance_layers
-	$Body.material_override = material
-	$Head.cull_mask = camera_cull_mask
-	$Head/Direction.layers = display_instance_layers
-	$Head/Direction.material_override = material
-
+	_body.layers = display_instance_layers
+	_body.material_override = material
+	_head.cull_mask = camera_cull_mask
+	_head_direction.layers = display_instance_layers
+	_head_direction.material_override = material
 
 
 func _input(event: InputEvent) -> void:
@@ -40,13 +42,13 @@ func _input(event: InputEvent) -> void:
 
 	if event is InputEventMouseMotion:
 		rotate(basis.y, -event.relative.x / 300.0)
-		$Head.rotation.x = clamp(
-			$Head.rotation.x - event.relative.y / 300.0,
+		_head.rotation.x = clamp(
+			_head.rotation.x - event.relative.y / 300.0,
 			-PI/2,
 			 PI/2
 		)
 
-		moved.emit($Head.global_transform)
+		moved.emit(_head.global_transform)
 
 
 func _physics_process(delta: float) -> void:
@@ -74,7 +76,7 @@ func _physics_process(delta: float) -> void:
 
 	if velocity != Vector3.ZERO:
 		move_and_slide()
-		moved.emit($Head.global_transform)
+		moved.emit(_head.global_transform)
 
 	if _gun_target.is_colliding():
 		var target_position := _gun_target.get_collision_point()
@@ -95,8 +97,8 @@ func set_active(value: bool) -> void:
 		return
 
 	active = value
-	$Head.current = active
-	$CollisionShapeBody.set_deferred("disabled", not active)
+	_head.current = active
+	_collision_shape.set_deferred("disabled", not active)
 
 
 func set_gravity_direction(value: Vector3) -> void:

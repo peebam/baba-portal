@@ -2,18 +2,21 @@ class_name PostProcess extends CanvasLayer
 
 signal properties_changed
 
-static var _scene : PackedScene = preload("res://scenes/post_process.tscn")
-
-static func new_scene() -> PostProcess:
-	return _scene.instantiate()
-
 var filter: View.Filter = View.NoFilter.new() : set = set_filter
 var transparent_colors : Array[Color] = [Color.TRANSPARENT, Color.TRANSPARENT] : set = set_transparent_colors
+
 var _material : ShaderMaterial
 
 func _ready() -> void:
 	_material = load("res://materials/post_process_material.tres").duplicate(true)
 	$Texture.material = _material
+
+# Static
+
+static var _scene : PackedScene = preload("res://scenes/post_process.tscn")
+
+static func new_scene() -> PostProcess:
+	return _scene.instantiate()
 
 # Public
 
