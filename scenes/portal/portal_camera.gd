@@ -1,6 +1,6 @@
 class_name PortalCamera extends SubViewport
 
-var cull_mask := 0 : set = set_cull_mask
+var default_cull_mask := 0 : set = set_default_cull_mask
 var post_process_transparent_colors : Array[Color] = [Color.TRANSPARENT, Color.TRANSPARENT] : set = set_post_process_transparent_colors
 var view_parameters: View.Parameters = null : set = set_view_parameters
 
@@ -18,12 +18,12 @@ static func new_scene() -> PortalCamera:
 
 # Public
 
-func set_cull_mask(value: int) -> void:
-	if cull_mask == value:
+func set_default_cull_mask(value: int) -> void:
+	if default_cull_mask == value:
 		return
 
-	cull_mask = value
-	$Camera.cull_mask = value
+	default_cull_mask = value
+	$Camera.cull_mask = default_cull_mask
 
 
 func set_post_process_transparent_colors(value: Array[Color]) -> void:
@@ -38,7 +38,11 @@ func set_view_parameters(value: View.Parameters) -> void:
 	if view_parameters == value:
 		return
 
+	if view_parameters:
+		$Camera.cull_mask &= ~view_parameters.cull_mask
+
 	view_parameters = value
+	$Camera.cull_mask |= view_parameters.cull_mask
 	%PostProcess.filter = view_parameters.filter
 
 

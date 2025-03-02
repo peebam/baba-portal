@@ -29,7 +29,7 @@ transparent_bg = true
 unique_name_in_owner = true
 transform = Transform3D(0.207912, -1.81762e-08, -0.978148, -8.74228e-08, -1, 0, -0.978148, 8.55124e-08, -0.207912, -1.55916, 2.28598, 4.9463)
 active = true
-camera_cull_mask = 789175
+default_camera_cull_mask = 393911
 display_instance_layers = 1
 
 [node name="PostProcess" parent="MainViewport" instance=ExtResource("6_ojgi5")]

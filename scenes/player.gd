@@ -11,9 +11,10 @@ const GRAVITY := 10.0
 
 @export var active := false
 @export var body_color := Color.CORNFLOWER_BLUE
-@export_flags_3d_render var camera_cull_mask := 0
+@export_flags_3d_render var default_camera_cull_mask := 0
 @export_flags_3d_render var display_instance_layers := 0
 
+var camera_cull_mask: int : set = set_camera_cull_mask
 var cross_position: Vector3 : get = get_cross_position
 
 var _go_slow := false
@@ -32,7 +33,7 @@ func _ready() -> void:
 	_body.layers = display_instance_layers
 	_body.material_override = material
 	_collision_shape.set_deferred("disabled", not active)
-	_head.cull_mask = camera_cull_mask
+	_head.cull_mask = default_camera_cull_mask
 	_head.current = active
 	_head_direction.layers = display_instance_layers
 	_head_direction.material_override = material
@@ -101,6 +102,15 @@ func set_active(value: bool) -> void:
 	active = value
 	_head.current = active
 	_collision_shape.set_deferred("disabled", not active)
+
+
+func set_camera_cull_mask(value: int) -> void:
+	if camera_cull_mask == value:
+		return
+
+	_head.cull_mask &= ~camera_cull_mask
+	camera_cull_mask = value
+	_head.cull_mask |= camera_cull_mask
 
 
 func set_gravity_direction(value: Vector3) -> void:

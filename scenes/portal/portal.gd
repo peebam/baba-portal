@@ -185,7 +185,7 @@ func _close() -> void:
 func _create_camera() -> PortalCamera:
 	var camera := PortalCamera.new_scene()
 	add_child(camera)
-	camera.set_cull_mask(default_cull_mask | level_cull_mask | technical_layers)
+	camera.default_cull_mask = (default_cull_mask | level_cull_mask | technical_layers)
 	return camera
 
 

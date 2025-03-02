@@ -3,10 +3,12 @@ extends Node
 
 class Parameters:
 	var filter: Filter
-	
-	func _init(filter_: Filter) -> void:
+	var cull_mask: int
+
+	func _init(filter_: Filter, cull_mask_: int) -> void:
 		filter = filter_
-	
+		cull_mask = cull_mask_
+
 
 class Filter:
 	var shader : Shader

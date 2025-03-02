@@ -54,7 +54,7 @@ class Room:
 		portal_a_go_to = portal_a_go_to_
 		portal_b_go_to = portal_b_go_to_
 		filter = filter_
-		cull_mask = 1 << cull_mask_
+		cull_mask = 0 if cull_mask_ == 0 else 1 << (cull_mask_ - 1)
 
 
 	func get_next_room_id(portal_id: PORTAL_IDS)-> String:
