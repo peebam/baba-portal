@@ -1,7 +1,6 @@
 extends Node3D
 
 signal portal_crossed(from_portal_id: Level.PORTAL_IDS)
-signal portal_created(portal_id: Level.PORTAL_IDS)
 signal room_entered()
 signal level_set()
 
@@ -106,7 +105,7 @@ func _reset_portals() -> void:
 	await _portal_b.dispose()
 
 
-func _set_portal_filter(portal: Portal, filter: PostProcess.Filter):
+func _set_portal_filter(portal: Portal, filter: View.Filter):
 	portal.post_process_filter = filter
 
 
@@ -116,6 +115,7 @@ func _set_room(value: Level.Room) -> void:
 
 	_room = value
 	room_entered.emit()
+
 
 func _try_put_portal(portal: Portal) -> void:
 	if not _portal_placeholder.active:
@@ -133,14 +133,19 @@ func _update_portal_viewer(portal: Portal) -> void:
 
 
 func _update_portal_filters(portal: Portal, portal_id: Level.PORTAL_IDS) -> void:
-	var filters: Array[PostProcess.Filter] = []
+	var filters: Array[View.Parameters] = []
 	var nb_cameras := portal.get_nb_cameras()
+
 	var room = _room
 	for i in nb_cameras:
 		room = level.get_next_room(room.id, portal_id)
-		filters.append(room.filter)
+		var view_parameters := View.Parameters.new(
+			room.filter,
+			room.cull_mask
+		)
+		filters.append(view_parameters)
 
-	portal.set_post_process_filters(filters)
+	portal.set_post_processes_view_parameters(filters)
 
 
 func _update_portal_layers(portal: Portal) -> void:
@@ -211,7 +216,7 @@ func _on_portal_object_entered(object: Node3D, portal: Portal) -> void:
 		_player_mirror.visible = true
 
 
-func _on_portal_object_exited(object: Node3D, portal: Portal, _to_linked_portal: bool) -> void:
+func _on_portal_object_exited(object: Node3D, _portal: Portal, _to_linked_portal: bool) -> void:
 	if object is Player:
 		_portal_activated = null
 		_player_mirror.visible = false

@@ -289,13 +289,13 @@ transform = Transform3D(1, 0, 0, 0, 1, -1.86265e-09, 0, 1.86265e-09, 1, 0, 0, 0)
 
 [node name="Pyramide" type="MeshInstance3D" parent="Objects"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.497225, 0.33108)
-layers = 393216
+layers = 1024
 mesh = SubResource("PrismMesh_085en")
 skeleton = NodePath("../..")
 
 [node name="Sphere" type="MeshInstance3D" parent="Objects"]
 transform = Transform3D(1, 0, 0, 0, 1, -5.58794e-09, 0, 5.58794e-09, 1, -4.47815, 0.538606, 3.16488)
-layers = 393216
+layers = 1024
 mesh = SubResource("SphereMesh_avweu")
 skeleton = NodePath("../..")
 

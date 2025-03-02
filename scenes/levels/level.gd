@@ -1,7 +1,5 @@
 class_name Level extends Node3D
 
-signal goal_activated
-
 enum PORTAL_IDS {
 	A = 0,
 	B = 1
@@ -36,24 +34,27 @@ func get_room(id: String) -> Level.Room:
 func get_walls() -> Array[Wall]:
 	return []
 
-# Classes
+# Class
 
 class Room:
 	var id : String
 	var portal_a_go_to : String
 	var portal_b_go_to : String
-	var filter : PostProcess.Filter
+	var filter : View.Filter
+	var cull_mask : int
 
 	func _init(
 		id_: String,
 		portal_a_go_to_: String,
 		portal_b_go_to_: String,
-		filter_ : PostProcess.Filter
+		filter_ : View.Filter,
+		cull_mask_ : int = 0
 	) -> void:
 		id = id_
 		portal_a_go_to = portal_a_go_to_
 		portal_b_go_to = portal_b_go_to_
 		filter = filter_
+		cull_mask = 1 << cull_mask_
 
 
 	func get_next_room_id(portal_id: PORTAL_IDS)-> String:

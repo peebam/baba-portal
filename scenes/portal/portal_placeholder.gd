@@ -41,8 +41,8 @@ func _orient() -> void:
 	# oriented in the view direction
 	var dot:= roundi(_up_direction.dot(_target_normal))
 	if dot == 0:
-		var angle := basis.y.signed_angle_to(_up_direction, basis.z)
-		quaternion = Quaternion(basis.z, angle) * quaternion
+		var angle_to_view_direction := basis.y.signed_angle_to(_up_direction, basis.z)
+		quaternion = Quaternion(basis.z, angle_to_view_direction) * quaternion
 		return
 
 	var angle := -(Plane(_target_normal)

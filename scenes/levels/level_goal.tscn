@@ -20,6 +20,7 @@ shape = SubResource("BoxShape3D_ijcmd")
 
 [node name="MeshInstance" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+layers = 1024
 mesh = SubResource("BoxMesh_dqhql")
 
 [node name="Area" type="Area3D" parent="."]

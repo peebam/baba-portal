@@ -67,7 +67,7 @@ func _ready() -> void:
 		dispose()
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if not visible:
 		return
 
@@ -136,9 +136,9 @@ func is_behind(object_position: Vector3) -> bool:
 	return portal_plane.distance_to(position - object_position) <= 0
 
 
-func set_post_process_filters(filters: Array[PostProcess.Filter]) -> void:
+func set_post_processes_view_parameters(view_parameters: Array[View.Parameters]) -> void:
 	for i in _cameras.size():
-		_cameras[i].post_process_filter = filters[i % filters.size()]
+		_cameras[i].view_parameters = view_parameters[i % view_parameters.size()]
 		_cameras[i].post_process_transparent_colors = [transparent_color]
 
 
@@ -288,14 +288,14 @@ func _update_walls_behind() -> void:
 
 # Signals
 
-func _on_object_entered(object: Node3D, portal: Portal) -> void:
+func _on_object_entered(_object: Node3D, _portal: Portal) -> void:
 	if not visible:
 		return
 
 	linked_portal._extra_cull_mask = EXTRA_CULL_MARGIN_MAX
 
 
-func _on_object_exited(object: Node3D, portal: Portal, to_linked_portal: bool) -> void:
+func _on_object_exited(_object: Node3D, _portal: Portal, to_linked_portal: bool) -> void:
 	if not visible:
 		return
 

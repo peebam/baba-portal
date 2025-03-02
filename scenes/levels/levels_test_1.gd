@@ -1,20 +1,26 @@
 extends Level
 
+signal goal_activated
+
 func _init() -> void:
 
 	var room0 := Level.Room.new(
-		"0", "A", "B", PostProcess.NoFilter.new()
+		"0", "A", "B", View.NoFilter.new()
 	)
 
 	var roomA := Level.Room.new(
-		"A", "B", "0", PostProcess.ColorFilter.new(Color(1, 0, 0, 0.3))
+		"A", "B", "0", View.ColorFilter.new(Color(1, 0, 0, 0.3))
 	)
 
 	var roomB := Level.Room.new(
-		"B", "0", "A", PostProcess.ColorFilter.new(Color(0, 1, 0, 0.3))
+		"B", "C", "0", View.ColorFilter.new(Color(0, 1, 0, 0.3))
 	)
 
-	_rooms = [room0, roomA, roomB]
+	var roomC := Level.Room.new(
+		"C", "0", "A", View.ColorFilter.new(Color(0, 0, 1, 0.4))
+	)
+
+	_rooms = [room0, roomA, roomB, roomC]
 
 # Public
 
