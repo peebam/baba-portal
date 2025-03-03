@@ -226,9 +226,9 @@ func _on_portal_object_exited(object: Node3D, _portal: Portal, _to_linked_portal
 func _on_room_entered() -> void:
 	_update_portal_filters(_portal_a, Level.PORTAL_IDS.A)
 	_update_portal_filters(_portal_b, Level.PORTAL_IDS.B)
+
 	_main_post_process.filter = _room.filter
 	_player.camera_cull_mask = _room.cull_mask
-
 
 
 func _on_portal_crossed(portal_id: Level.PORTAL_IDS) -> void:

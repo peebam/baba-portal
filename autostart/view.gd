@@ -1,5 +1,11 @@
 extends Node
 
+class Resources:
+
+	static var color_filter_shader :Shader =  preload("res://shaders/post_process/color_post_process_filter.gdshader")
+	static var empty_filter_shader :Shader =  preload("res://shaders/post_process/square_post_process_filter.gdshader")
+	static var square_filter_shader :Shader =  preload("res://shaders/post_process/empty_post_process_filter.gdshader")
+
 
 class Parameters:
 	var filter: Filter
@@ -11,17 +17,19 @@ class Parameters:
 
 
 class Filter:
+
 	var shader : Shader
 	func apply(_material: ShaderMaterial) -> void:
 		pass
 
 
 class ColorFilter extends Filter:
+
 	var color := Color.TRANSPARENT
 
 	func _init(color_: Color) -> void:
 		color = color_
-		shader = preload("res://shaders/post_process/color_post_process_filter.gdshader")
+		shader = Resources.color_filter_shader
 
 
 	func apply(material: ShaderMaterial) -> void:
@@ -31,7 +39,7 @@ class ColorFilter extends Filter:
 
 class NoFilter extends Filter:
 	func _init() -> void:
-		shader = preload("res://shaders/post_process/empty_post_process_filter.gdshader")
+		shader = Resources.empty_filter_shader
 
 
 	func apply(material: ShaderMaterial) -> void:
@@ -43,7 +51,7 @@ class SquareFilter extends Filter:
 
 	func _init(square_size_: int) -> void:
 		square_size = square_size_
-		shader = preload("res://shaders/post_process/square_post_process_filter.gdshader")
+		shader = Resources.square_filter_shader
 
 
 	func apply(material: ShaderMaterial) -> void:
