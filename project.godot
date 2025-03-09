@@ -31,7 +31,7 @@ import/blender/enabled=false
 
 [global_group]
 
-crosser="Can cross portal. Must expose a cross_point: Vector3"
+crosser=""
 
 [input]
 

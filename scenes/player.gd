@@ -15,7 +15,7 @@ const GRAVITY := 10.0
 @export_flags_3d_render var display_instance_layers := 0
 
 var camera_cull_mask: int : set = set_camera_cull_mask
-var cross_position: Vector3 : get = get_cross_position
+var pivot: Vector3 : get = get_pivot
 
 var _go_slow := false
 
@@ -77,8 +77,9 @@ func _physics_process(delta: float) -> void:
 			move_toward(velocity.dot(basis.x), 0, BREAK) * basis.x +
 			move_toward(velocity.dot(basis.z), 0, BREAK) * basis.z)
 
+	move_and_slide()
+
 	if velocity != Vector3.ZERO:
-		move_and_slide()
 		moved.emit(_head.global_transform)
 
 	if _gun_target.is_colliding():
@@ -91,7 +92,7 @@ func _physics_process(delta: float) -> void:
 
 # Public
 
-func get_cross_position() -> Vector3:
+func get_pivot() -> Vector3:
 	return _head.global_position
 
 

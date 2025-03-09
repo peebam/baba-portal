@@ -13,7 +13,7 @@ func _init() -> void:
 	)
 
 	var roomB := Level.Room.new(
-		"B", "C", "0", View.ColorFilter.new(Color(0, 1, 0, 0.3))
+		"B", "C", "0", View.ColorFilter.new(Color(0, 1, 0, 0.5))
 	)
 
 	var roomC := Level.Room.new(

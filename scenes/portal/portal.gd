@@ -34,7 +34,7 @@ const EXTRA_CULL_MARGIN_MIN := 0.0
 var _cameras: Array[PortalCamera] = []
 var _extra_cull_mask := EXTRA_CULL_MARGIN_MIN : set = _set_extra_cull_mask
 var _objects: Array[Node3D] = []
-var _objects_last_position: Dictionary = {}
+var _objects_pivot_previous: Dictionary = {}
 var _walls_behind: Array[Wall] = []
 
 @onready var _collision_shape: CollisionShape3D = $CollisionShape
@@ -163,17 +163,17 @@ func _check_crosser() -> void:
 		if not _objects.has(collider):
 			object_entered.emit(collider, self)
 			_objects.append(collider)
-			_objects_last_position[collider] = collider.position
+			_objects_pivot_previous[collider] = collider.pivot
 
 	for object in _objects:
-		var object_last_position: Vector3 = _objects_last_position[object]
-		if object_last_position != object.position:
-
+		var object_pivot_previous: Vector3 = _objects_pivot_previous[object]
+		if object_pivot_previous != object.position:
+			var object_pivot_current: Vector3 = object.pivot
 			# Distance position portal where a crossing can be triggered.
 			var margin := 0.05
-			if _has_crossed(object, margin):
-				var object_direction := (object.position - object_last_position).normalized()
-				var distance_to_portal := distance_to(object.position)
+			if _has_crossed(object_pivot_current, object_pivot_previous, margin):
+				var object_direction := (object_pivot_current - object_pivot_previous).normalized()
+				var distance_to_portal := distance_to(object_pivot_current)
 				# If the margin is greater than 0, the crossing can be triggered whereas the object is not really behind the portal.
 				# The project_position is computed to predict the position of the object as it should be behind the portal.
 				var projected_position := object.position + object_direction * (margin + distance_to_portal)
@@ -183,13 +183,13 @@ func _check_crosser() -> void:
 				object_crossed.emit(object, new_position, new_rotation)
 				object_exited.emit(object, self, true)
 				_objects.erase(object)
-				_objects_last_position.erase(object)
+				_objects_pivot_previous.erase(object)
 			elif !colliders.has(object):
 				_objects.erase(object)
-				_objects_last_position.erase(object)
+				_objects_pivot_previous.erase(object)
 				object_exited.emit(object, self, false)
 			else:
-				_objects_last_position[object] = object.position
+				_objects_pivot_previous[object] = object.pivot
 
 
 func _close() -> void:
@@ -270,33 +270,30 @@ func _get_walls_behind() -> Array[Wall]:
 	return walls_behind
 
 
-func _has_crossed(object: Node3D, margin := 0.0) -> bool:
-	var object_current_position := object.position
-	var object_last_position: Vector3 = _objects_last_position[object]
-
+func _has_crossed(pivot_current: Vector3, pivot_previous: Vector3, margin := 0.0) -> bool:
 	var portal_position := position + (-basis.z * margin)
 	var portal_plan := Plane(basis.z)
 
-	var object_current_position_distance := portal_plan.distance_to(portal_position - object_current_position)
-	var object_last_position_distance := portal_plan.distance_to(portal_position - object_last_position)
+	var pivot_current_distance := portal_plan.distance_to(portal_position - pivot_current)
+	var pivot_previous_distance := portal_plan.distance_to(portal_position - pivot_previous)
 
-	var sign_object_current_position_distance: int = sign(object_current_position_distance)
-	var sign_object_last_position_distance: int = sign(object_last_position_distance)
+	var sign_pivot_current_distance: int = sign(pivot_current_distance)
+	var sign_pivot_previous_distance: int = sign(pivot_previous_distance)
 
-	if sign_object_last_position_distance > 0:
-		if sign_object_current_position_distance > 0:
+	if sign_pivot_previous_distance > 0:
+		if sign_pivot_current_distance > 0:
 			return false
 		else:
 			prints("signs different", self.name)
-			return true
 	else:
-		if sign_object_current_position_distance >= 0:
+		if sign_pivot_current_distance >= 0:
+			return false
+		elif pivot_current_distance >= pivot_previous_distance:
 			return false
 		else:
 			prints("inside", self.name)
-			return object_current_position_distance < object_last_position_distance
 
-
+	return true
 
 func _open() -> bool:
 	if visible:
