@@ -119,3 +119,12 @@ func set_gravity_direction(value: Vector3) -> void:
 
 	velocity = Quaternion(up_direction, -value) * velocity
 	up_direction = -value
+
+
+func set_position_orientation(position_: Vector3, quaternion_: Quaternion)-> void:
+	if position == position_ and quaternion == quaternion_:
+		return
+
+	position = position_
+	quaternion = quaternion_
+	moved.emit(_head.global_transform)

@@ -201,11 +201,8 @@ func _on_portal_object_crossed(object: Node3D, new_position: Vector3, new_rotati
 	if object is Player:
 		_player_mirror.position = object.position
 		_player_mirror.quaternion = object.quaternion
-		object.position = new_position
-		object.quaternion = new_rotation
 
-		_portal_a.update(_current_cmera_position, _current_cmera_quaternion)
-		_portal_b.update(_current_cmera_position, _current_cmera_quaternion)
+		object.set_position_orientation(new_position, new_rotation)
 		object.set_gravity_direction(-object.basis.y)
 
 		portal_crossed.emit(portal_id)
