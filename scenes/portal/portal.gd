@@ -5,7 +5,7 @@ class_name Portal extends StaticBody3D
 ## The PlayerDetector : Detect when the player arrived near the portal. Then the collision shape of the
 ## walls behind the portal are disabled.
 
-signal object_crossed(object: Node3D, current_position: Vector3, current_rotation: Quaternion, new_position: Vector3, new_rotation: Quaternion)
+signal object_crossed(object: Node3D, new_position: Vector3, new_rotation: Quaternion)
 signal object_entered(object: Node3D, portal: Portal)
 signal object_exited(object: Node3D, portal: Portal, to_linked_portal: bool)
 
@@ -34,6 +34,7 @@ const EXTRA_CULL_MARGIN_MIN := 0.0
 var _cameras: Array[PortalCamera] = []
 var _extra_cull_mask := EXTRA_CULL_MARGIN_MIN : set = _set_extra_cull_mask
 var _objects: Array[Node3D] = []
+var _objects_last_position: Dictionary = {}
 var _walls_behind: Array[Wall] = []
 
 @onready var _collision_shape: CollisionShape3D = $CollisionShape
@@ -94,6 +95,11 @@ func dispose() -> void:
 	visible = false
 
 
+func distance_to(from: Vector3) -> float:
+	var portal_plane := Plane(basis.z)
+	return portal_plane.distance_to(position - from)
+
+
 func get_linked_position(object_position: Vector3) -> Vector3:
 	return _get_linked_position(
 		position,
@@ -130,9 +136,8 @@ func get_textures() -> Array[Texture]:
 	return textures
 
 
-func is_behind(object_position: Vector3) -> bool:
-	var portal_plane := Plane(basis.z)
-	return portal_plane.distance_to(position - object_position) <= 0
+func is_behind(from: Vector3) -> bool:
+	return distance_to(from) <= 0.0
 
 
 func set_post_processes_view_parameters(view_parameters: Array[View.Parameters]) -> void:
@@ -155,31 +160,54 @@ func update(camera_position: Vector3, camera_rotation: Quaternion) -> void:
 func _check_crosser() -> void:
 	var colliders := _detect_crossers()
 	for collider in colliders:
-		if !_objects.has(collider):
+		if not _objects.has(collider):
 			object_entered.emit(collider, self)
 			_objects.append(collider)
-
-		if is_behind(collider.cross_position):
-			var new_position := get_linked_position(collider.position)
-			var new_rotation := get_linked_rotation(collider.quaternion)
-			object_crossed.emit(
-				collider,
-				new_position,
-				new_rotation)
-			_objects.erase(collider)
-			object_exited.emit(collider, self, true)
-
+			_objects_last_position[collider] = collider.position
 
 	for object in _objects:
-		if !colliders.has(object):
-			_objects.erase(object)
-			object_exited.emit(object, self, false)
+		var object_last_position: Vector3 = _objects_last_position[object]
+		if object_last_position != object.position:
+
+			# Distance position portal where a crossing can be triggered.
+			var margin := 0.05
+			if _has_crossed(object, margin):
+				var object_direction := (object.position - object_last_position).normalized()
+				var distance_to_portal := distance_to(object.position)
+				# If the margin is greater than 0, the crossing can be triggered whereas the object is not really behind the portal.
+				# The project_position is computed to predict the position of the object as it should be behind the portal.
+				var projected_position := object.position + object_direction * (margin + distance_to_portal)
+
+				var new_position := get_linked_position(projected_position)
+				var new_rotation := get_linked_rotation(object.quaternion)
+				object_crossed.emit(object, new_position, new_rotation)
+				object_exited.emit(object, self, true)
+				_objects.erase(object)
+				_objects_last_position.erase(object)
+			elif !colliders.has(object):
+				_objects.erase(object)
+				_objects_last_position.erase(object)
+				object_exited.emit(object, self, false)
+			else:
+				_objects_last_position[object] = object.position
 
 
 func _close() -> void:
 	if visible:
 		_display_close.visible = true
 		_collision_shape.set_deferred("disabled", false)
+
+
+func _compute_crossing_point(from: Vector3, direction: Vector3) -> Vector3:
+	var crossing_point = Plane(basis.z).intersects_ray(
+		position - from,
+		direction
+	)
+
+	if crossing_point == null:
+		return position
+
+	return crossing_point + position
 
 
 func _create_camera() -> PortalCamera:
@@ -242,6 +270,34 @@ func _get_walls_behind() -> Array[Wall]:
 	return walls_behind
 
 
+func _has_crossed(object: Node3D, margin := 0.0) -> bool:
+	var object_current_position := object.position
+	var object_last_position: Vector3 = _objects_last_position[object]
+
+	var portal_position := position + (-basis.z * margin)
+	var portal_plan := Plane(basis.z)
+
+	var object_current_position_distance := portal_plan.distance_to(portal_position - object_current_position)
+	var object_last_position_distance := portal_plan.distance_to(portal_position - object_last_position)
+
+	var sign_object_current_position_distance: int = sign(object_current_position_distance)
+	var sign_object_last_position_distance: int = sign(object_last_position_distance)
+
+	if sign_object_last_position_distance > 0:
+		if sign_object_current_position_distance > 0:
+			return false
+		else:
+			prints("signs different", self.name)
+			return true
+	else:
+		if sign_object_current_position_distance >= 0:
+			return false
+		else:
+			prints("inside", self.name)
+			return object_current_position_distance < object_last_position_distance
+
+
+
 func _open() -> bool:
 	if visible:
 		_display_close.visible = false
@@ -287,17 +343,23 @@ func _update_walls_behind() -> void:
 
 # Signals
 
-func _on_object_entered(_object: Node3D, _portal: Portal) -> void:
+func _on_object_crossed(object: Node3D, _new_position: Vector3, _new_rotation: Quaternion) -> void:
 	if not visible:
 		return
+	prints("crossed", self.name, object.name)
 
+
+func _on_object_entered(object: Node3D, _portal: Portal) -> void:
+	if not visible:
+		return
+	prints("enter", self.name, object.name)
 	linked_portal._extra_cull_mask = EXTRA_CULL_MARGIN_MAX
 
 
-func _on_object_exited(_object: Node3D, _portal: Portal, to_linked_portal: bool) -> void:
+func _on_object_exited(object: Node3D, _portal: Portal, to_linked_portal: bool) -> void:
 	if not visible:
 		return
-
+	prints("exit", self.name, object.name)
 	if not to_linked_portal:
 		linked_portal._extra_cull_mask = EXTRA_CULL_MARGIN_MIN
 		_extra_cull_mask = EXTRA_CULL_MARGIN_MIN

@@ -1,17 +1,16 @@
-[gd_scene load_steps=10 format=3 uid="uid://bc6c7obj5fgfk"]
+[gd_scene load_steps=9 format=3 uid="uid://bc6c7obj5fgfk"]
 
 [ext_resource type="Script" path="res://scenes/portal/portal.gd" id="1_0bcba"]
 [ext_resource type="Material" uid="uid://cqdryidc4rj3d" path="res://materials/portal_broken_material.tres" id="4_cuslf"]
 [ext_resource type="PackedScene" uid="uid://cfvetmkxf2h8n" path="res://scenes/portal/portal_frame.tscn" id="5_qdmhg"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vqg1g"]
+margin = 0.01
 size = Vector3(1, 2, 0.1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mngd5"]
-size = Vector3(1, 2, 0.01)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_fue20"]
-size = Vector3(1, 2, 0.01)
+margin = 0.01
+size = Vector3(1, 2, 0.3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lt4xa"]
 size = Vector3(0.9, 1.9, 0.1)
@@ -39,14 +38,10 @@ shape = SubResource("BoxShape3D_vqg1g")
 disabled = true
 
 [node name="ObjectsDetector" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.15)
 shape = SubResource("BoxShape3D_mngd5")
 target_position = Vector3(0, 0, 0)
-
-[node name="CrossingDetector" type="Area3D" parent="."]
-collision_layer = 0
-
-[node name="CollisionShape" type="CollisionShape3D" parent="CrossingDetector"]
-shape = SubResource("BoxShape3D_fue20")
+debug_shape_custom_color = Color(0.694118, 0, 0, 1)
 
 [node name="WallsDetector" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
@@ -76,7 +71,6 @@ mesh = SubResource("PlaneMesh_0qswy")
 
 [node name="Frame" parent="Display" instance=ExtResource("5_qdmhg")]
 
+[connection signal="object_crossed" from="." to="." method="_on_object_crossed"]
 [connection signal="object_entered" from="." to="." method="_on_object_entered"]
 [connection signal="object_exited" from="." to="." method="_on_object_exited"]
-[connection signal="body_entered" from="CrossingDetector" to="." method="_on_crossing_detector_body_entered"]
-[connection signal="body_exited" from="CrossingDetector" to="." method="_on_crossing_detector_body_exited"]
