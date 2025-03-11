@@ -12,6 +12,7 @@ signal object_exited(object: Node3D, portal: Portal, to_linked_portal: bool)
 const DEFAULT_UP_DIRECTION := Vector3.UP
 const EXTRA_CULL_MARGIN_MAX := 16384.0
 const EXTRA_CULL_MARGIN_MIN := 0.0
+const PORTAL_CROSSING_DETECTION_MARGIN := 0.05
 
 @export_category("General")
 @export_color_no_alpha var main_color := Color.AQUA
@@ -71,7 +72,7 @@ func _physics_process(_delta: float) -> void:
 	if not visible:
 		return
 
-	_check_crosser()
+	_check_crossers()
 
 # Public
 
@@ -157,39 +158,48 @@ func update(camera_position: Vector3, camera_rotation: Quaternion) -> void:
 
 # Privates
 
-func _check_crosser() -> void:
+func _check_crossers() -> void:
 	var colliders := _detect_crossers()
 	for collider in colliders:
 		if not _objects.has(collider):
 			object_entered.emit(collider, self)
-			_objects.append(collider)
 			_objects_pivot_previous[collider] = collider.pivot
 
 	for object in _objects:
-		var object_pivot_previous: Vector3 = _objects_pivot_previous[object]
-		if object_pivot_previous != object.position:
-			var object_pivot_current: Vector3 = object.pivot
-			# Distance position portal where a crossing can be triggered.
-			var margin := 0.05
-			if _has_crossed(object_pivot_current, object_pivot_previous, margin):
-				var object_direction := (object_pivot_current - object_pivot_previous).normalized()
-				var distance_to_portal := distance_to(object_pivot_current)
-				# If the margin is greater than 0, the crossing can be triggered whereas the object is not really behind the portal.
-				# The project_position is computed to predict the position of the object as it should be behind the portal.
-				var projected_position := object.position + object_direction * (margin + distance_to_portal)
+		if not colliders.has(object):
+			object_exited.emit(object, self, false)
+			_objects_pivot_previous.erase(object)
 
-				var new_position := get_linked_position(projected_position)
-				var new_rotation := get_linked_rotation(object.quaternion)
-				object_crossed.emit(object, new_position, new_rotation)
-				object_exited.emit(object, self, true)
-				_objects.erase(object)
-				_objects_pivot_previous.erase(object)
-			elif !colliders.has(object):
-				_objects.erase(object)
-				_objects_pivot_previous.erase(object)
-				object_exited.emit(object, self, false)
-			else:
-				_objects_pivot_previous[object] = object.pivot
+	_objects = colliders
+	for object in _objects:
+		_check_crosser(object)
+
+
+func _check_crosser(object: Node3D) -> void:
+
+	var object_pivot_previous: Vector3 = _objects_pivot_previous[object]
+	var object_pivot_current: Vector3 = object.pivot
+	if object_pivot_previous == object_pivot_current:
+		return
+
+	# Distance position portal where a crossing can be triggered.
+	if not _has_crossed(object_pivot_current, object_pivot_previous, PORTAL_CROSSING_DETECTION_MARGIN):
+		_objects_pivot_previous[object] = object.pivot
+		return
+
+	var object_direction := (object_pivot_current - object_pivot_previous).normalized()
+	var distance_to_portal := distance_to(object_pivot_current)
+	# If the margin is greater than 0, the crossing can be triggered whereas the object is not really behind the portal.
+	# The project_position is computed to predict the position of the object as it should be behind the portal.
+	var projected_position := object.position + object_direction * (PORTAL_CROSSING_DETECTION_MARGIN + distance_to_portal)
+
+	var new_position := get_linked_position(projected_position)
+	var new_rotation := get_linked_rotation(object.quaternion)
+
+	object_crossed.emit(object, new_position, new_rotation)
+	object_exited.emit(object, self, true)
+	_objects.erase(object)
+	_objects_pivot_previous.erase(object)
 
 
 func _close() -> void:
@@ -270,6 +280,12 @@ func _get_walls_behind() -> Array[Wall]:
 	return walls_behind
 
 
+## Check if an object has passed through the portal based on the last two known positions
+##
+## The margin defines a distance from the portal at which the crossing will be detected.
+## the object is the player, the margin helps trigger the transition and prevents the camera
+## from getting too close to the portal's texture. If the camera gets closer than [member Camera3D.near],
+## it can cause rendering issues
 func _has_crossed(pivot_current: Vector3, pivot_previous: Vector3, margin := 0.0) -> bool:
 	var portal_position := position + (-basis.z * margin)
 	var portal_plan := Plane(basis.z)
@@ -277,23 +293,24 @@ func _has_crossed(pivot_current: Vector3, pivot_previous: Vector3, margin := 0.0
 	var pivot_current_distance := portal_plan.distance_to(portal_position - pivot_current)
 	var pivot_previous_distance := portal_plan.distance_to(portal_position - pivot_previous)
 
-	var sign_pivot_current_distance: int = sign(pivot_current_distance)
-	var sign_pivot_previous_distance: int = sign(pivot_previous_distance)
+	# If the sign of the distance is positive, the object is in front of the portal plan
+	# If the sign of the distance is negative, the object is in behind the portal plan
+	# A crossing is detected if :
+	# - the object cross the plan (pos. distance then neg. distance),
+	# - the object is behind the plan (neg. distances) and going toward the portal.
 
-	if sign_pivot_previous_distance > 0:
-		if sign_pivot_current_distance > 0:
+	if sign(pivot_current_distance) > 0:
+		# The two distance are positive, the plan has not been crossed
+		if sign(pivot_current_distance) > 0:
 			return false
-		else:
-			prints("signs different", self.name)
-	else:
-		if sign_pivot_current_distance >= 0:
-			return false
-		elif pivot_current_distance >= pivot_previous_distance:
-			return false
-		else:
-			prints("inside", self.name)
-
+		# Crossing detected
+		return true
+	# The two distance are negative, but the object go away from the portal
+	if pivot_current_distance > pivot_previous_distance:
+		return false
+	# The object alredy crossed the plan, and go toward the portal
 	return true
+
 
 func _open() -> bool:
 	if visible:

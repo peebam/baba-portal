@@ -118,8 +118,14 @@ func set_gravity_direction(value: Vector3) -> void:
 	if up_direction == -value:
 		return
 
-	velocity = Quaternion(up_direction, -value) * velocity
-	up_direction = -value
+	var new_up_direction = -value
+	var quaternion := Math.compute_alignment_quaternion(
+		up_direction,
+		new_up_direction
+	)
+
+	velocity = quaternion * velocity
+	up_direction = new_up_direction
 
 
 func set_position_orientation(position_: Vector3, quaternion_: Quaternion)-> void:
