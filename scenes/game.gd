@@ -1,6 +1,6 @@
 extends Node3D
 
-signal portal_crossed(from_portal_id: Level.PORTAL_IDS)
+signal portal_crossed(portal: Portal)
 signal room_entered()
 signal level_set()
 
@@ -23,11 +23,11 @@ var _room : Level.Room : set = _set_room
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-	_portal_a.object_crossed.connect(_on_portal_object_crossed.bind(Level.PORTAL_IDS.A))
+	_portal_a.object_crossed.connect(_on_portal_object_crossed)
 	_portal_a.object_entered.connect(_on_portal_object_entered)
 	_portal_a.object_exited.connect(_on_portal_object_exited)
 
-	_portal_b.object_crossed.connect(_on_portal_object_crossed.bind(Level.PORTAL_IDS.B))
+	_portal_b.object_crossed.connect(_on_portal_object_crossed)
 	_portal_b.object_entered.connect(_on_portal_object_entered)
 	_portal_b.object_exited.connect(_on_portal_object_exited)
 
@@ -130,13 +130,13 @@ func _update_portal_viewer(portal: Portal) -> void:
 	portal.update(_current_cmera_position, _current_cmera_quaternion)
 
 
-func _update_portal_filters(portal: Portal, portal_id: Level.PORTAL_IDS) -> void:
+func _update_portal_filters(portal: Portal) -> void:
 	var filters: Array[View.Parameters] = []
 	var nb_cameras := portal.get_nb_cameras()
 
 	var room = _room
 	for i in nb_cameras:
-		room = level.get_next_room(room.id, portal_id)
+		room = level.get_next_room(room.id, portal.id)
 		var view_parameters := View.Parameters.new(
 			room.filter,
 			room.cull_mask
@@ -190,7 +190,7 @@ func _on_player_target_unset() -> void:
 	_portal_placeholder.active = false
 
 
-func _on_portal_object_crossed(object: Node3D, new_position: Vector3, new_rotation: Quaternion, portal_id: Level.PORTAL_IDS) -> void:
+func _on_portal_object_crossed(object: Node3D, new_position: Vector3, new_rotation: Quaternion) -> void:
 	if object is Player:
 		_player_mirror.position = object.position
 		_player_mirror.quaternion = object.quaternion
@@ -198,7 +198,7 @@ func _on_portal_object_crossed(object: Node3D, new_position: Vector3, new_rotati
 		object.set_position_orientation(new_position, new_rotation)
 		object.set_gravity_direction(-object.basis.y)
 
-		portal_crossed.emit(portal_id)
+		portal_crossed.emit(_portal_activated)
 
 
 func _on_portal_object_entered(object: Node3D, portal: Portal) -> void:
@@ -214,12 +214,12 @@ func _on_portal_object_exited(object: Node3D, _portal: Portal, _to_linked_portal
 
 
 func _on_room_entered() -> void:
-	_update_portal_filters(_portal_a, Level.PORTAL_IDS.A)
-	_update_portal_filters(_portal_b, Level.PORTAL_IDS.B)
+	_update_portal_filters(_portal_a)
+	_update_portal_filters(_portal_b)
 
 	_main_post_process.filter = _room.filter
 	_player.camera_cull_mask = _room.cull_mask
 
 
-func _on_portal_crossed(portal_id: Level.PORTAL_IDS) -> void:
-	_enter_next_room(portal_id)
+func _on_portal_crossed(portal: Portal) -> void:
+	_enter_next_room(portal.id)

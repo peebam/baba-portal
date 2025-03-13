@@ -5,6 +5,7 @@ class_name Portal extends StaticBody3D
 ## The PlayerDetector : Detect when the player arrived near the portal. Then the collision shape of the
 ## walls behind the portal are disabled.
 
+
 signal object_crossed(object: Node3D, new_position: Vector3, new_rotation: Quaternion)
 signal object_entered(object: Node3D, portal: Portal)
 signal object_exited(object: Node3D, portal: Portal, to_linked_portal: bool)
@@ -16,6 +17,7 @@ const PORTAL_CROSSING_DETECTION_MARGIN := 0.05
 
 @export_category("General")
 @export_color_no_alpha var main_color := Color.AQUA
+@export var id: Level.PORTAL_IDS
 
 @export_category("Cull masks")
 @export_flags_3d_render var default_cull_mask := 0
