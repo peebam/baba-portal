@@ -22,8 +22,6 @@ var _room : Level.Room : set = _set_room
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	_update_viewport_size()
-	get_viewport().size_changed.connect(_on_viewport_size_change)
 
 	_portal_a.object_crossed.connect(_on_portal_object_crossed.bind(Level.PORTAL_IDS.A))
 	_portal_a.object_entered.connect(_on_portal_object_entered)
@@ -158,11 +156,6 @@ func _update_portal_layers(portal: Portal) -> void:
 			layers &= ~portal.linked_portal.level_cull_mask
 		wall.layers = layers
 
-
-func _update_viewport_size() -> void:
-	var viewport_size := get_tree().get_root().get_viewport().get_visible_rect().size
-	_main_viewport.size = viewport_size
-
 # Signals
 
 func _on_level_set() -> void:
@@ -230,7 +223,3 @@ func _on_room_entered() -> void:
 
 func _on_portal_crossed(portal_id: Level.PORTAL_IDS) -> void:
 	_enter_next_room(portal_id)
-
-
-func _on_viewport_size_change() -> void:
-	_update_viewport_size()

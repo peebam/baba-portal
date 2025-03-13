@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://b02pdc888ynws"]
+[gd_scene load_steps=10 format=3 uid="uid://b02pdc888ynws"]
 
 [ext_resource type="Script" path="res://scenes/game.gd" id="1_k87lh"]
 [ext_resource type="PackedScene" uid="uid://namepa245nf8" path="res://scenes/player.tscn" id="3_6g8ua"]
+[ext_resource type="Script" path="res://lib/viewport_auto_reisze.gd" id="4_s87ao"]
 [ext_resource type="PackedScene" uid="uid://dsgpxle7cecpt" path="res://scenes/portal/portal_placeholder.tscn" id="6_5ok7j"]
 [ext_resource type="PackedScene" uid="uid://bc6c7obj5fgfk" path="res://scenes/portal/portal.tscn" id="6_e3ylp"]
 [ext_resource type="PackedScene" uid="uid://w3btsd3cquti" path="res://scenes/post_process.tscn" id="6_ojgi5"]
@@ -34,6 +35,9 @@ display_instance_layers = 1
 
 [node name="PostProcess" parent="MainViewport" instance=ExtResource("6_ojgi5")]
 unique_name_in_owner = true
+
+[node name="ViewportAutoReisze" type="Node" parent="MainViewport"]
+script = ExtResource("4_s87ao")
 
 [node name="PlayerMirror" parent="." instance=ExtResource("3_6g8ua")]
 unique_name_in_owner = true

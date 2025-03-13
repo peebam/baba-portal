@@ -58,8 +58,6 @@ func _ready() -> void:
 	_display_frame.layers = technical_layers | frame_layers
 	_display_technical.layers = technical_layers
 
-	get_tree().get_root().size_changed.connect(_on_viewport_size_changed)
-	_update_viewport_size()
 	_update_walls_behind()
 
 	if visible:
@@ -298,7 +296,6 @@ func _has_crossed(pivot_current: Vector3, pivot_previous: Vector3, margin := 0.0
 	# A crossing is detected if :
 	# - the object cross the plan (pos. distance then neg. distance),
 	# - the object is behind the plan (neg. distances) and going toward the portal.
-
 	if sign(pivot_current_distance) > 0:
 		# The two distance are positive, the plan has not been crossed
 		if sign(pivot_current_distance) > 0:
@@ -346,12 +343,6 @@ func _unset_from_walls_behind() -> void:
 		await wall.unset_portal(self)
 
 
-func _update_viewport_size() -> void:
-	var viewport_size := get_tree().get_root().get_viewport().get_visible_rect().size
-	for i in _cameras.size():
-		_cameras[i].size = viewport_size
-
-
 func _update_walls_behind() -> void:
 	_walls_behind = _get_walls_behind()
 
@@ -377,7 +368,3 @@ func _on_object_exited(object: Node3D, _portal: Portal, to_linked_portal: bool) 
 	if not to_linked_portal:
 		linked_portal._extra_cull_mask = EXTRA_CULL_MARGIN_MIN
 		_extra_cull_mask = EXTRA_CULL_MARGIN_MIN
-
-
-func _on_viewport_size_changed() -> void:
-	_update_viewport_size()
