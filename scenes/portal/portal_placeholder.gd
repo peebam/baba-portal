@@ -2,7 +2,7 @@ class_name PortalPlaceholder extends Node3D
 
 signal status_changed()
 
-var active := false : set = _set_active
+var active := false : set = set_active
 
 var _target_normal := Vector3.ZERO
 var _target_position := Vector3.ZERO
@@ -16,10 +16,18 @@ func move(target_position: Vector3, target_normal: Vector3, view_direction: Vect
 	_target_position = target_position
 	_up_direction = up_direction
 	_view_direction = view_direction
-
 	_orient()
 
-	active = _is_covering() and not _is_colliding()
+
+func set_active(value: bool) -> void:
+	var is_activable = _is_covering() and not _is_colliding()
+	value = value && is_activable
+
+	if (active == value):
+		return
+
+	active = value
+	status_changed.emit()
 
 # Private
 
@@ -51,14 +59,6 @@ func _orient() -> void:
 #
 	var rounded_angle := roundi(angle / (PI/2)) * (PI/2)
 	quaternion = Quaternion(basis.z, rounded_angle) * quaternion
-
-
-func _set_active(value: bool) -> void:
-	if (active == value):
-		return
-
-	active = value
-	status_changed.emit()
 
 
 func _on_status_changed() -> void:

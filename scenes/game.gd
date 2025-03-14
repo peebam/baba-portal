@@ -185,6 +185,8 @@ func _on_player_target_set(target_position: Vector3, target_normal: Vector3, vie
 		view_direction,
 		up_direction)
 
+	_portal_placeholder.active = true
+
 
 func _on_player_target_unset() -> void:
 	_portal_placeholder.active = false
