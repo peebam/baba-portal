@@ -97,4 +97,5 @@ text = "O"
 
 [connection signal="level_set" from="." to="." method="_on_level_set"]
 [connection signal="portal_crossed" from="." to="." method="_on_portal_crossed"]
+[connection signal="portal_put" from="." to="." method="_on_portal_put"]
 [connection signal="room_entered" from="." to="." method="_on_room_entered"]
