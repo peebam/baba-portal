@@ -22,9 +22,9 @@ func _init() -> void:
 
 	_rooms = [room0, roomA, roomB, roomC]
 
-# Public
+# Private
 
-func get_walls() -> Array[Wall]:
+func _get_walls() -> Array[Wall]:
 	var walls: Array[Wall] = []
 
 	var wall_nodes: Array[Node3D] = []

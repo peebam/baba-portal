@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cfvetmkxf2h8n"]
 
 [ext_resource type="PackedScene" uid="uid://dqlbiqeaxcblt" path="res://meshes/portal_frame.glb" id="1_0q8tk"]
-[ext_resource type="Script" path="res://scenes/portal/portal_frame.gd" id="2_xbraq"]
+[ext_resource type="Script" uid="uid://bgow5mby4nw2w" path="res://scenes/portal/portal_frame.gd" id="2_xbraq"]
 
 [node name="portal_frame" instance=ExtResource("1_0q8tk")]
 transform = Transform3D(1.91069e-15, 4.37114e-08, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, -4.37114e-08, -0.5, 0, 0)

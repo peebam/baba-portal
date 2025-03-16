@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://w3btsd3cquti"]
 
-[ext_resource type="Script" path="res://scenes/post_process.gd" id="1_excwc"]
+[ext_resource type="Script" uid="uid://bigue0pqvltrq" path="res://scenes/post_process.gd" id="1_excwc"]
 
 [node name="PostProcess" type="CanvasLayer"]
 script = ExtResource("1_excwc")

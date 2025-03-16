@@ -147,14 +147,7 @@ func _update_portal_filters(portal: Portal) -> void:
 
 
 func _update_portal_layers(portal: Portal) -> void:
-	var walls: Array[Wall] = $Level.get_walls()
-	for wall in walls:
-		var layers = wall.layers
-		if not portal.is_behind(wall.position):
-			layers |= portal.linked_portal.level_cull_mask
-		else:
-			layers &= ~portal.linked_portal.level_cull_mask
-		wall.layers = layers
+	level.update_layers_for_portal(portal)
 
 # Signals
 

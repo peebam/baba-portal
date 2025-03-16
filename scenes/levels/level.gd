@@ -12,18 +12,34 @@ var _rooms: Array[Level.Room]
 
 # Public
 
+func enter_room(room_id: String) -> void:
+	pass
+
+
 func get_first_room() -> Level.Room:
 	return _rooms[0]
 
 
 func get_next_room(room_id: String, portal_id: PORTAL_IDS) -> Level.Room:
-	var room := get_room(room_id)
+	var room := _get_room(room_id)
 	var next_room_id := room.get_next_room_id(portal_id)
-	var next_room := get_room(next_room_id)
+	var next_room := _get_room(next_room_id)
 	return next_room
 
 
-func get_room(id: String) -> Level.Room:
+func update_layers_for_portal(portal: Portal) -> void:
+	var walls: Array[Wall] = _get_walls()
+	for wall in walls:
+		var layers = wall.layers
+		if not portal.is_behind(wall.position):
+			layers |= portal.linked_portal.level_cull_mask
+		else:
+			layers &= ~portal.linked_portal.level_cull_mask
+		wall.layers = layers
+
+# Private
+
+func _get_room(id: String) -> Level.Room:
 	var rooms : Array[Room] = _rooms.filter(
 		func (r: Room) -> bool:
 			return r.id == id
@@ -31,7 +47,7 @@ func get_room(id: String) -> Level.Room:
 	return rooms[0]
 
 
-func get_walls() -> Array[Wall]:
+func _get_walls() -> Array[Wall]:
 	return []
 
 # Class

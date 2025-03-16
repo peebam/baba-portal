@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://p88csn54rjnr"]
 
-[ext_resource type="Script" path="res://scenes/portal/portal_camera.gd" id="1_npg8o"]
+[ext_resource type="Script" uid="uid://b3kt2fu77jegg" path="res://scenes/portal/portal_camera.gd" id="1_npg8o"]
 [ext_resource type="PackedScene" uid="uid://w3btsd3cquti" path="res://scenes/post_process.tscn" id="2_eqek0"]
-[ext_resource type="Script" path="res://lib/viewport_auto_reisze.gd" id="3_nd65h"]
+[ext_resource type="Script" uid="uid://cx8x1ft26ujnb" path="res://lib/viewport_auto_reisze.gd" id="3_nd65h"]
 
 [node name="PortalCamera" type="SubViewport"]
 handle_input_locally = false

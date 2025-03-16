@@ -1,21 +1,21 @@
 [gd_scene load_steps=10 format=3 uid="uid://b02pdc888ynws"]
 
-[ext_resource type="Script" path="res://scenes/game.gd" id="1_k87lh"]
+[ext_resource type="Script" uid="uid://dutdqwxkwmgyi" path="res://scenes/game.gd" id="1_k87lh"]
 [ext_resource type="PackedScene" uid="uid://namepa245nf8" path="res://scenes/player.tscn" id="3_6g8ua"]
-[ext_resource type="Script" path="res://lib/viewport_auto_reisze.gd" id="4_s87ao"]
+[ext_resource type="Script" uid="uid://cx8x1ft26ujnb" path="res://lib/viewport_auto_reisze.gd" id="4_s87ao"]
 [ext_resource type="PackedScene" uid="uid://dsgpxle7cecpt" path="res://scenes/portal/portal_placeholder.tscn" id="6_5ok7j"]
 [ext_resource type="PackedScene" uid="uid://bc6c7obj5fgfk" path="res://scenes/portal/portal.tscn" id="6_e3ylp"]
 [ext_resource type="PackedScene" uid="uid://w3btsd3cquti" path="res://scenes/post_process.tscn" id="6_ojgi5"]
-[ext_resource type="Shader" path="res://shaders/render_compositing.gdshader" id="7_wixri"]
+[ext_resource type="Shader" uid="uid://b25jxntoc8ql5" path="res://shaders/render_compositing.gdshader" id="7_wixri"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xlr11"]
 shader = ExtResource("7_wixri")
-shader_parameter/portal_a_nb_textures = 4
-shader_parameter/portal_a_transparent_color = null
-shader_parameter/portal_b_nb_textures = 4
-shader_parameter/portal_b_transparent_color = null
 shader_parameter/portal_a_textures = null
+shader_parameter/portal_a_nb_textures = 4
+shader_parameter/portal_a_transparent_color = Color(0, 0, 0, 1)
 shader_parameter/portal_b_textures = null
+shader_parameter/portal_b_nb_textures = 4
+shader_parameter/portal_b_transparent_color = Color(0, 0, 0, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_gk75j"]
 

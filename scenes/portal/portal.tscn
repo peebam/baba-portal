@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://bc6c7obj5fgfk"]
 
-[ext_resource type="Script" path="res://scenes/portal/portal.gd" id="1_0bcba"]
+[ext_resource type="Script" uid="uid://2u1yt7ptri4f" path="res://scenes/portal/portal.gd" id="1_0bcba"]
 [ext_resource type="Material" uid="uid://cqdryidc4rj3d" path="res://materials/portal_broken_material.tres" id="4_cuslf"]
 [ext_resource type="PackedScene" uid="uid://cfvetmkxf2h8n" path="res://scenes/portal/portal_frame.tscn" id="5_qdmhg"]
 

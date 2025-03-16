@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cydpj0f1ru6h4"]
 
-[ext_resource type="Script" path="res://scenes/levels/wall.gd" id="1_d71lt"]
+[ext_resource type="Script" uid="uid://cvyf0qkowsbpf" path="res://scenes/levels/wall.gd" id="1_d71lt"]
 [ext_resource type="Material" uid="uid://bnqtfd28rqxso" path="res://materials/wall_material.tres" id="1_odekw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lvwd2"]
