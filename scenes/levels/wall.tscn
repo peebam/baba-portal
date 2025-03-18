@@ -4,21 +4,21 @@
 [ext_resource type="Material" uid="uid://bnqtfd28rqxso" path="res://materials/wall_material.tres" id="1_odekw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lvwd2"]
-size = Vector3(2, 2, 0.2)
+size = Vector3(2, 2, 0.05)
 
-[sub_resource type="QuadMesh" id="QuadMesh_1ovxx"]
-size = Vector2(2, 2)
+[sub_resource type="BoxMesh" id="BoxMesh_80qgo"]
+size = Vector3(2, 2, 0.05)
 
 [node name="Wall" type="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.025)
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_d71lt")
 default_layers = 262144
 
 [node name="CollisionShape" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
 shape = SubResource("BoxShape3D_lvwd2")
 
 [node name="MeshInstance" type="MeshInstance3D" parent="."]
 material_override = ExtResource("1_odekw")
-mesh = SubResource("QuadMesh_1ovxx")
+mesh = SubResource("BoxMesh_80qgo")
